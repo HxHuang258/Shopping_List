@@ -8,14 +8,17 @@ class GroceryListItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(groceryItem.name),
-      leading: Container(
-        width: 20,
-        height: 20,
-        color: groceryItem.category.colour,
+    return InkWell(
+      splashColor: Colors.amber,
+      child: ListTile(
+        title: Text(groceryItem.name),
+        leading: Container(
+          width: 20,
+          height: 20,
+          color: groceryItem.category.colour,
+        ),
+        trailing: Text(groceryItem.quantity.toString()),
       ),
-      trailing: Text(groceryItem.quantity.toString()),
     );
   }
 }
