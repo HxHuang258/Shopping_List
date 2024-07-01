@@ -28,7 +28,13 @@ class _NewItemScreenState extends State<NewItemScreen> {
                   label: Text('Name'),
                 ),
                 validator: (value) {
-                  return 'Demo...';
+                  if (value == null ||
+                      value.isEmpty ||
+                      value.trim().length <= 1 ||
+                      value.trim().length > 50) {
+                    return 'Must be 1 - 50 characters';
+                  }
+                  return null;
                 },
               ),
               Row(
@@ -39,6 +45,15 @@ class _NewItemScreenState extends State<NewItemScreen> {
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
                       ),
+                      validator: (value) {
+                        if (value == null ||
+                            value.isEmpty ||
+                            int.tryParse(value) == null ||
+                            int.tryParse(value)! <= 0) {
+                          return 'Must be 1 or more';
+                        }
+                        return null;
+                      },
                       initialValue: '1',
                     ),
                   ),
@@ -61,6 +76,20 @@ class _NewItemScreenState extends State<NewItemScreen> {
                           ),
                         ),
                     ], onChanged: (value) {}),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Reset'),
+                  ),
+                  ElevatedButton(
+                    onPressed: () {},
+                    child: Text('Add item'),
                   ),
                 ],
               )
