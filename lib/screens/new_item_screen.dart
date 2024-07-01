@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
+import 'package:shopping_list/models/category.dart';
 
 class NewItemScreen extends StatefulWidget {
   const NewItemScreen({super.key});
@@ -12,9 +13,14 @@ class NewItemScreen extends StatefulWidget {
 
 class _NewItemScreenState extends State<NewItemScreen> {
   final _formKey = GlobalKey<FormState>();
+  var _enteredItem = '';
+  var _enteredQuantity = 1;
+  var _selectedCategory = categories[Categories.vegetables];
 
   void _saveItem() {
     _formKey.currentState!.validate();
+    _formKey.currentState!.save();
+    print(_enteredItem);
   }
 
   @override
@@ -43,6 +49,9 @@ class _NewItemScreenState extends State<NewItemScreen> {
                   }
                   return null;
                 },
+                onSaved: (value) {
+                  _enteredItem = value!;
+                },
               ),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
@@ -52,6 +61,7 @@ class _NewItemScreenState extends State<NewItemScreen> {
                       decoration: const InputDecoration(
                         label: Text('Quantity'),
                       ),
+                      initialValue: _enteredQuantity.toString(),
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
@@ -61,7 +71,9 @@ class _NewItemScreenState extends State<NewItemScreen> {
                         }
                         return null;
                       },
-                      initialValue: '1',
+                      onSaved: (value) {
+                        _enteredQuantity = int.parse(value!);
+                      },
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -82,7 +94,11 @@ class _NewItemScreenState extends State<NewItemScreen> {
                             ],
                           ),
                         ),
-                    ], onChanged: (value) {}),
+                    ], onChanged: (value) {
+                      setState(() {
+                        _selectedCategory = value!;
+                      });
+                    }),
                   ),
                 ],
               ),
