@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
 import 'package:shopping_list/models/grocery_item.dart';
+import 'package:http/http.dart' as http;
 
 class NewItemScreen extends StatefulWidget {
   const NewItemScreen({super.key});
@@ -22,7 +25,27 @@ class _NewItemScreenState extends State<NewItemScreen> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
-    Navigator.of(context).pop(GroceryItem(id: DateTime.now().toString(), name: _enteredItem, quantity: _enteredQuantity, category: _selectedCategory));
+    final url = Uri.https(
+        'flutter-prep-12ca3-default-rtdb.europe-west1.firebasedatabase.app',
+        'shopping-list.json');
+    http.post(
+      url,
+      headers: {
+        'Content-type': 'application/json',
+      },
+      body: json.encode(
+        {
+          'name': _enteredItem,
+          'quantity': _enteredQuantity,
+          'category': _selectedCategory.title,
+        },
+      ),
+    );
+    // Navigator.of(context).pop(GroceryItem(
+    //     id: DateTime.now().toString(),
+    //     name: _enteredItem,
+    //     quantity: _enteredQuantity,
+    //     category: _selectedCategory));
   }
 
   @override
@@ -80,27 +103,29 @@ class _NewItemScreenState extends State<NewItemScreen> {
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: DropdownButtonFormField(items: [
-                      for (final category in categories.entries)
-                        DropdownMenuItem(
-                          value: category.value,
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 16,
-                                height: 16,
-                                color: category.value.colour,
+                    child: DropdownButtonFormField(
+                        items: [
+                          for (final category in categories.entries)
+                            DropdownMenuItem(
+                              value: category.value,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    width: 16,
+                                    height: 16,
+                                    color: category.value.colour,
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Text(category.value.title),
+                                ],
                               ),
-                              const SizedBox(width: 8),
-                              Text(category.value.title),
-                            ],
-                          ),
-                        ),
-                    ], onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value!;
-                      });
-                    }),
+                            ),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedCategory = value!;
+                          });
+                        }),
                   ),
                 ],
               ),
