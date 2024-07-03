@@ -21,14 +21,14 @@ class _NewItemScreenState extends State<NewItemScreen> {
   var _enteredQuantity = 1;
   var _selectedCategory = categories[Categories.vegetables]!;
 
-  void _saveItem() {
+  void _saveItem() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
     }
     final url = Uri.https(
         'flutter-prep-12ca3-default-rtdb.europe-west1.firebasedatabase.app',
         'shopping-list.json');
-    http.post(
+    final response = await http.post(
       url,
       headers: {
         'Content-type': 'application/json',
@@ -41,6 +41,14 @@ class _NewItemScreenState extends State<NewItemScreen> {
         },
       ),
     );
+    print(response.body);
+    print(response.statusCode);
+
+    if (!context.mounted) {
+      return;
+    }
+
+    Navigator.of(context).pop();
     // Navigator.of(context).pop(GroceryItem(
     //     id: DateTime.now().toString(),
     //     name: _enteredItem,
