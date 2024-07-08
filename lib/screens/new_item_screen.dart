@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:shopping_list/models/grocery_item.dart';
 import 'package:shopping_list/data/categories.dart';
 import 'package:shopping_list/models/category.dart';
-import 'package:shopping_list/models/grocery_item.dart';
 import 'package:http/http.dart' as http;
 
 class NewItemScreen extends StatefulWidget {
@@ -44,16 +44,16 @@ class _NewItemScreenState extends State<NewItemScreen> {
     print(response.body);
     print(response.statusCode);
 
+    final Map<String, dynamic> resData = json.decode(response.body);
+
     if (!context.mounted) {
       return;
     }
-
-    Navigator.of(context).pop();
-    // Navigator.of(context).pop(GroceryItem(
-    //     id: DateTime.now().toString(),
-    //     name: _enteredItem,
-    //     quantity: _enteredQuantity,
-    //     category: _selectedCategory));
+    Navigator.of(context).pop(GroceryItem(
+        id: resData['name'],
+        name: _enteredItem,
+        quantity: _enteredQuantity,
+        category: _selectedCategory));
   }
 
   @override
